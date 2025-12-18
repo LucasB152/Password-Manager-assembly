@@ -1,8 +1,22 @@
-.macro DOUBLE_TABLE_INDEX(Rx, Ry, Rdest) LDR(blockSizeInBits, Rdest) CMOVE(1, R0) SHL(R0, Rdest, Rdest) MUL(Ry, Rdest, Rdest) ADD(Rdest, Rx, Rdest) LD(Rdest, 0, Rdest)
-
 hashPassword:
-    |; Place your code here
+    PUSH(LP)
+    PUSH(BP)
+    MOVE(SP, BP)
 
+    PUSH(R1) |; password
+    PUSH(R2) |; Register to store the value 0
+
+    LD(BP, -12, R1) |; R1 <- password
+    CMOVE(0, R2) |; R2 <- 0
+    PUSH(R2)
+    PUSH(R1)
+    CALL(hashPasswordRec, 2)
+
+    POP(R2)
+    POP(R1)
+    POP(BP)
+    POP(LP)
+    RTN()
 
 hashPasswordRec:
     PUSH(LP)
@@ -42,7 +56,6 @@ hashPasswordRec:
     |; recursionDepth % N_SUB_TABLES
     LDR(nSubTables, R3) |; Get N_SUB_TABLES in R3
     MOD(R2, R3, R3)
-    .breakpoint
     DOUBLE_TABLE_INDEX(R4, R3, R5) |; Get the currentDepthHash and store it in R4
     
     MOVE(R5, R0)
@@ -77,5 +90,32 @@ hashPasswordRec_end:
 
 
 checkHash:
-    |; Place your code here
+    PUSH(LP)
+    PUSH(BP)
+    MOVE(SP, BP)
+
+    PUSH(R1) |; userId
+    PUSH(R2) |; password
+
+    LD(BP, -12, R1) |; R1 <- userId
+    LD(BP, -16, R2) |; R2 <- hashedPassword
+
+    |; Verif if userId < maxNbUsers
+    LDR(maxNbUsers, R0)
+    CMPLTC(R1, 10, R0)
+    BF(R0, checkHash_end) |; If userId >= maxNbUsers, then return
+
+    MULC(R1, 4, R1) |; Get the offset
+    CMOVE(passwordHashes, R0) |; R0 <- Address of the start of the tab passwordHashes
+    ADD(R0, R1, R1)
+    LD(R1, 0, R0) |; Load in R0 the value at memory R0 + offset R0
+
+    CMPEQ(R0, R2, R0)
+
+checkHash_end:
+    POP(R2)
+    POP(R1)
+    POP(BP)
+    POP(LP)
+    RTN()
 

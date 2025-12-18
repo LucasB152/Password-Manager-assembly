@@ -4,3 +4,6 @@
 |; DOUBLE_ARR_OFFSET(...) 
 .macro DOUBLE_ARR_OFFSET() |; complete this macro
 
+.macro DOUBLE_TABLE_INDEX(Rx, Ry, Rdest) LDR(blockSizeInBits, Rdest) CMOVE(1, R0) SHL(R0, Rdest, Rdest) MUL(Ry, Rdest, Rdest) ADD(Rdest, Rx, Rdest) LD(Rdest, 0, Rdest)
+
+

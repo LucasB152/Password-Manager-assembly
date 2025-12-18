@@ -87,12 +87,12 @@ main:
     PUSH(R2)
     PUSH(R31)
     CALL(verifyPassword, 2)
-
-.breakpoint
+   .breakpoint
     |; verifyPassword(0, password0) -> should return 1 (true)
     PUSH(R1)
     PUSH(R31)
     CALL(verifyPassword, 2)
+   .breakpoint
 
     HALT()
 
