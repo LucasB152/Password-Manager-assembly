@@ -6,6 +6,6 @@ Tests that failed:
 - Test checkHash in isolation
 - Too many registers used in hashPassword
 
-+ in the macro definition, I directly use the r0 register. INstead of that, I should use a parameter and give the r0 register when the function call.
++ in the macro definition, I directly use the r0 register. Instead of that, I should use a parameter and give the r0 register when the function call.
 
 **=> to update when possible**
